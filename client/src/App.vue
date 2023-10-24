@@ -17,23 +17,23 @@
     </div>
     <div>
       <!-- Lista de fotos -->
-      <div class="flex flex-wrap gap-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-5">
         <div v-for="foto in fotos" :key="foto.id">
           <div class="card">
-  <h2 class="text-3xl pb-3"> {{ foto.title }}</h2>
-  <img :src="foto.image" alt="Foto" class="image-size" />
-  <p>description: {{ foto.description }}</p>
-  <p>&#x2764  {{ foto.likes }}</p>
-  <button @click.prevent="incrementLikes(foto.id)">Like</button>
-  <div class="gap-2">
-    <button class="bg-blue-500 hover:bg-blue-400 text-xs pr-4" @click.prevent="putFoto(foto.id)">
-      Update
-    </button>
-    <button class="bg-red-500 hover-bg-red-400 text-xs pl-4" @click.prevent="deleteFoto(foto.id)">
-      Delete
-    </button>
-  </div>
-</div>
+            <h2 class="text-3xl pb-3"> {{ foto.title }}</h2>
+            <img :src="foto.image" alt="Foto" class="image-size" />
+            <p class="py-3">description: {{ foto.description }}</p>
+            <p>&#x2764 {{ foto.likes }}</p>
+            <button class="mb-5 mt-5" @click.prevent="incrementLikes(foto.id)">Like</button>
+            <div class="gap-2">
+              <button class="bg-blue-500 hover:bg-blue-400 text-xs pr-4" @click.prevent="putFoto(foto.id)">
+                Update
+              </button>
+              <button class="bg-red-500 hover-bg-red-400 text-xs pl-4" @click.prevent="deleteFoto(foto.id)">
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -89,27 +89,27 @@ export default {
       this.getFotos();
     },
     async putFoto(id) {
-  const updatedFoto = {
-    title: this.title,
-    description: this.description, 
-    image: this.image,
-    likes: this.likes,
-  };
-  this.title = "";
-  this.description = ""; 
-  this.image = "";
-  this.likes = "";
-  const url = `http://localhost:8008/api/instagram/${id}`;
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
+      const updatedFoto = {
+        title: this.title,
+        description: this.description,
+        image: this.image,
+        likes: this.likes,
+      };
+      this.title = "";
+      this.description = "";
+      this.image = "";
+      this.likes = "";
+      const url = `http://localhost:8008/api/instagram/${id}`;
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedFoto),
+      });
+      await response.json();
+      this.getFotos();
     },
-    body: JSON.stringify(updatedFoto),
-  });
-  await response.json();
-  this.getFotos();
-},
     async deleteFoto(id) {
       try {
         const url = `http://localhost:8008/api/instagram/${id}`;
@@ -123,33 +123,33 @@ export default {
       }
     },
     async incrementLikes(id) {
-  // Encuentra la foto por su ID o como corresponda en tu aplicación
-  const foto = this.fotos.find((foto) => foto.id === id);
+      // Encuentra la foto por su ID o como corresponda en tu aplicación
+      const foto = this.fotos.find((foto) => foto.id === id);
 
-  if (foto) {
-    // Incrementa los "likes" en 1
-    foto.likes++;
+      if (foto) {
+        // Incrementa los "likes" en 1
+        foto.likes++;
 
-    // Luego, actualiza los "likes" en la base de datos
-    const url = `http://localhost:8008/api/instagram/${id}`;
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ likes: foto.likes }), // Solo envía los "likes" para actualizar
-    });
+        // Luego, actualiza los "likes" en la base de datos
+        const url = `http://localhost:8008/api/instagram/${id}`;
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ likes: foto.likes }), // Solo envía los "likes" para actualizar
+        });
 
-    if (response.ok) {
-      // La actualización en la base de datos fue exitosa
-      // Puedes realizar alguna acción adicional aquí si es necesario
-    } else {
-      // La actualización en la base de datos falló
-      // Debes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
-      console.log("Error al actualizar los likes en la base de datos");
+        if (response.ok) {
+          // La actualización en la base de datos fue exitosa
+          // Puedes realizar alguna acción adicional aquí si es necesario
+        } else {
+          // La actualización en la base de datos falló
+          // Debes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
+          console.log("Error al actualizar los likes en la base de datos");
+        }
+      }
     }
-  }
-}
   },
   created() {
     this.getFotos(); // Cargar fotos al inicio
