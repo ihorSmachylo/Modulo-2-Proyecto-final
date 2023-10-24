@@ -43,19 +43,23 @@ const getFotos = (req, res) => {
         console.log(err);
       });
   };
-
   const updateFoto = (req, res) => {
     const id = req.params.id;
     const { title, image, description, likes } = req.body;
-    const instagram = new Instagramclon(title, image, description, likes);
-    instagram
-      .update(id)
-      .then(() => res.status(200).send({ data: instagram }))
+  
+    // Realiza la actualización en la base de datos utilizando los valores recibidos
+    Instagramclon.updateAllFields(id, title, image, description, likes)
+      .then(() => res.status(200).send({ message: 'Foto actualizada exitosamente' }))
       .catch((err) => {
-        res.status(500);
+        if (err.message === 'Likes debe ser un número válido') {
+          res.status(400).send({ message: 'Los likes deben ser un número válido' });
+        } else {
+          res.status(500).send({ message: 'Error al actualizar la foto' });
+        }
         console.log(err);
       });
   };
+  
   
   const deleteFoto = (req, res) => {
     const id = req.params.id;
